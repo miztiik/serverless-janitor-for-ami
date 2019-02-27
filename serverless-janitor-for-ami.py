@@ -32,25 +32,15 @@ If User provides different values, override defaults
 """
 def setGlobalVars():
     try:
-        if os.environ['findNeedle']:
-            globalVars['findNeedle']  = os.environ['findNeedle']
-    except KeyError as e:
+        if not globalVars.get('findNeedle'):
+            globalVars['findNeedle']    = os.getenv('findNeedle', None)
+        if not globalVars.get('RetentionDays'):
+            globalVars['RetentionDays'] = os.getenv('RetentionDays', None)
+        if not globalVars.get('tagsToExclude'):
+            globalVars['tagsToExclude'] = os.getenv('tagsToExclude', None)
+    except Exception as err:
         logger.error("User Customization Environment variables are not set")
-        logger.error('ERROR: {0}'.format( str(e) ) )
-
-    try:        
-        if os.environ['RetentionDays']:
-            globalVars['RetentionDays'] = os.environ['RetentionDays']
-    except KeyError as e:
-        logger.error("User Customization Environment variables are not set")
-        logger.error('ERROR: {0}'.format( str(e) ) )
-        
-    try:        
-        if os.environ['tagsToExclude']:
-            globalVars['tagsToExclude']  = os.environ['tagsToExclude']
-    except KeyError as e:
-        logger.error("User Customization Environment variables are not set")
-        logger.error('ERROR: {0}'.format( str(e) ) )
+        logger.error('ERROR: {0}'.format( str(err) ) )
 
 """
 This function looks at *all* AMIs that have a "DeleteOn" tag containing
